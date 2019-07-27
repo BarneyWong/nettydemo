@@ -1,0 +1,28 @@
+package com.study.echo;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.CharsetUtil;
+
+@ChannelHandler.Sharable
+public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+
+    @Override
+    public void channelActive(ChannelHandlerContext context) {
+        context.writeAndFlush(Unpooled.copiedBuffer("Netty Rocks !", CharsetUtil.UTF_8));
+    }
+
+    @Override
+    public void channelRead0(ChannelHandlerContext context, ByteBuf in) {
+        System.out.println("Client received: " + in.toString(CharsetUtil.UTF_8));
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+        cause.printStackTrace();
+        context.close();
+    }
+}
